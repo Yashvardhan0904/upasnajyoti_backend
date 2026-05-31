@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build && npx prisma migrate deploy",
+  "outputDirectory": "dist",
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "ignoreCommand": "git diff --quiet HEAD~ HEAD -- .gitignore"
+}
