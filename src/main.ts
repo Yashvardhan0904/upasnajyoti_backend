@@ -1,61 +1,11 @@
-import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, Logger } from '@nestjs/common';
-import helmet from 'helmet';
-import * as cookieParser from 'cookie-parser';
-import { AppModule } from './app.module';
+import { Logger } from '@nestjs/common';
+import { createApp } from './bootstrap';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const isProduction = process.env.NODE_ENV === 'production';
 
-  // Create application with logging configuration
-  const app = await NestFactory.create(AppModule, {
-    logger: isProduction ? ['error', 'warn', 'log'] : ['error', 'warn', 'log', 'debug', 'verbose'],
-  });
-
-  // Cookie parser
-  app.use(cookieParser());
-
-  // Security headers
-  app.use(
-    helmet({
-      contentSecurityPolicy: false,
-      crossOriginEmbedderPolicy: false,
-      crossOriginResourcePolicy: false,
-      hsts: isProduction
-        ? {
-            maxAge: 31536000, // 1 year
-            includeSubDomains: true,
-            preload: true,
-          }
-        : false,
-    }),
-  );
-
-  // CORS - allow all origins
-  app.enableCors({
-    origin: true,
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    exposedHeaders: ['X-Total-Count'],
-    maxAge: 86400, // 24 hours
-  });
-
-  // Global validation pipe with strict settings
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true, // Strip properties that don't have decorators
-      forbidNonWhitelisted: true, // Throw error if non-whitelisted properties
-      transform: true, // Transform payloads to DTO instances
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
-      disableErrorMessages: isProduction, // Hide detailed validation errors in production
-    }),
-  );
-
-  // Graceful shutdown handling
+  const app = await createApp();
   app.enableShutdownHooks();
 
   // Handle shutdown signals

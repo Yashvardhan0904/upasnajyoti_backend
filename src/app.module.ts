@@ -3,7 +3,6 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD, APP_FILTER } from '@nestjs/core';
-import { join } from 'path';
 import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
 import { AuthModule } from './auth/auth.module';
@@ -28,7 +27,7 @@ import { GraphQLExceptionFilter } from './common/filters/graphql-exception.filte
       imports: [PrismaModule],
       inject: [PrismaService],
       useFactory: (prisma: PrismaService) => ({
-        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        autoSchemaFile: true,
         sortSchema: true,
         playground: process.env.NODE_ENV !== 'production',
         introspection: true,
