@@ -4,7 +4,7 @@
   "description": "Production-grade GraphQL API for ecommerce platform",
   "main": "dist/main.js",
   "scripts": {
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "start": "node dist/main.js",
     "start:dev": "ts-node src/main.ts",
     "postinstall": "prisma generate",
